@@ -26,7 +26,7 @@ export class BooksService {
 
   private extractData(res: any) {
     const body = JSON.parse(res._body);
-    return body.data || [];
+    return body.data || {};
   }
 
   private handleError (error: Response | any) {

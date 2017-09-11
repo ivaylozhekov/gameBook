@@ -25,12 +25,11 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class BooksComponent implements OnInit {
   bookContentStore: Observable<BookContent[]>;
-  private bookContent = [];
+  private bookContent = {};
 
   getBook$ = new Subject()
     .startWith(() => Observable.empty())
     .mergeMap(ev => this.userService.getBook('test_user', 'UUID_1'));
-
 
   constructor(private store: Store<any>, private userService: BooksService) {
     this.bookContentStore = store.select('bookContent');
@@ -47,5 +46,5 @@ export class BooksComponent implements OnInit {
         this.bookContent = data;
       }
     );
-  }  
+  }
 }

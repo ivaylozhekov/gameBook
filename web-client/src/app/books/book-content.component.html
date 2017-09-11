@@ -1,5 +1,5 @@
 <ul>
-    <li *ngFor="let data of bookContent">
+    <li *ngFor="let data of bookData">
         <div>
             <span>{{data.id}}</span>
             <span>{{data.content}}</span>
@@ -11,4 +11,5 @@
         </div>
     </li>
 </ul>
+<div>{{bookDataJson}}</div>
 <div class="d3-chart" #chart></div>

@@ -10,7 +10,11 @@ app.use(cors());
 
 app.get(`${baseUrl}/books/:owner/:bookId`, function (req, res) {
   db.getBookContent({owner: req.params.owner, ref: req.params.bookId}, function(data) {
-    res.send({data});
+    let convertedData = {};
+    data.forEach(function(element) {
+      convertedData[element.id] = element;
+    });
+    res.send({data: convertedData});
   });
 });
 
