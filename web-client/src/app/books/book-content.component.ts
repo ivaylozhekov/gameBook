@@ -37,20 +37,23 @@ export class BookContentComponent implements OnChanges {
       let keys = Object.keys(data);
       if (keys.length) {
         let resultObject = [];
-        this.calcNestedStructure(data, keys[0], resultObject);
+        this.calcNestedStructure(data, keys[0], resultObject, {});
         this.bookDataJson = JSON.stringify(resultObject, null, 2);
       }
     }
-    calcNestedStructure(data, currentKey, currentNode){
+    calcNestedStructure(data, currentKey, currentNode, keyMap){
     if (data[currentKey].children.length) {
       for(let i = 0; i < data[currentKey].children.length; i++) {
         const child = data[currentKey].children[i];
         const nextNodeId = child.id || child;
+
         currentNode.push({ id: nextNodeId, children: [] });
-        
 
         if (data[nextNodeId].children.length) {
-          this.calcNestedStructure(data, nextNodeId, currentNode[i].children);
+          if(!keyMap[nextNodeId]) {
+            keyMap[nextNodeId] = true;
+            this.calcNestedStructure(data, nextNodeId, currentNode[i].children, keyMap);
+          }
         }
       }
     }

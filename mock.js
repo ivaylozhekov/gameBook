@@ -85,7 +85,7 @@ let UUID_1_v3 = [
     {id: 11, content: "bla bal bla", children: [12], parents: [9]},
     {id: 12, content: "bla bal bla", children: [], parents: [11]},
     {id: 13, content: "bla bal bla", children: [9, 14], parents: [5]},
-    {id: 14, content: "bla bal bla", children: [15], parents: [13]},
+    {id: 14, content: "bla bal bla", children: [15,16], parents: [13]},
     {id: 15, content: "bla bal bla", children: [17], parents: [14]},
     {id: 16, content: "bla bal bla", children: [18], parents: [14]},
     {id: 17, content: "bla bal bla", children: [], parents: [15]},
