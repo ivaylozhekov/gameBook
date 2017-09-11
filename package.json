@@ -1,0 +1,20 @@
+{
+  "name": "gamebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.18.0",
+    "express": "^4.15.4",
+    "mongodb": "^2.2.31",
+    "cors": "^2.8.4"
+  },
+  "devDependencies": {    
+  },
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "author": "Ivaylo Zhekov",
+  "license": "ISC"
+}

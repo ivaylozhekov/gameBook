@@ -1,0 +1,11 @@
+<ul>
+  <li *ngFor="let user of users | async">
+    {{user.name}}
+    <button (click)="userInfo$.next(user)">Short info</button>
+    <button (click)="getUserDetails$.next(user)">Full Details</button>
+    <span *ngIf="user.info">
+      Location: {{user.info.capital}}, {{user.info.country}}
+      <button (click)="clearUserInfo$.next(user)">x</button>
+    </span>
+  </li>
+</ul>

@@ -1,0 +1,14 @@
+<ul>
+    <li *ngFor="let data of bookContent">
+        <div>
+            <span>{{data.id}}</span>
+            <span>{{data.content}}</span>
+            <span *ngIf="data.children.length">
+                <span *ngFor="let link of data.children">
+                    <button>{{link.id || link}}</button>
+                </span>
+            </span>
+        </div>
+    </li>
+</ul>
+<div class="d3-chart" #chart></div>

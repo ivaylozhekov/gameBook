@@ -1,0 +1,4 @@
+<app-user-list [users]="users"></app-user-list>
+<button *ngIf="users.length !== 0" (click)="clearUsersClicks$.next()">Clear Users</button>
+<button (click)="getUsersClicks$.next()">Load Users</button>
+<router-outlet></router-outlet>
