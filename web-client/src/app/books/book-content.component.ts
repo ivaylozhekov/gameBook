@@ -28,36 +28,36 @@ export class BookContentComponent implements OnChanges {
     private bookData = [];
     private bookDataJson = '';
     ngOnChanges(changes: any) {
-      let data = changes.bookContent.currentValue;
+      const data = changes.bookContent.currentValue;
 
       Object.keys(data).forEach(key => {
         this.bookData.push(this.bookContent[key]);
       });
 
-      let keys = Object.keys(data);
+      const keys = Object.keys(data);
       if (keys.length) {
-        let resultObject = [];
+        const resultObject = [];
         this.calcNestedStructure(data, keys[0], resultObject, {});
         this.bookDataJson = JSON.stringify(resultObject, null, 2);
       }
     }
-    calcNestedStructure(data, currentKey, currentNode, keyMap){
+    calcNestedStructure(data, currentKey, currentNode, keyMap) {
     if (data[currentKey].children.length) {
-      for(let i = 0; i < data[currentKey].children.length; i++) {
+      for (let i = 0; i < data[currentKey].children.length; i++) {
         const child = data[currentKey].children[i];
         const nextNodeId = child.id || child;
 
         currentNode.push({ id: nextNodeId, children: [] });
 
         if (data[nextNodeId].children.length) {
-          if(!keyMap[nextNodeId]) {
+          if (!keyMap[nextNodeId]) {
             keyMap[nextNodeId] = true;
             this.calcNestedStructure(data, nextNodeId, currentNode[i].children, keyMap);
           }
         }
       }
     }
-  } 
+  }
 }
 
 //         var root = d3.stratify()

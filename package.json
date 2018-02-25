@@ -5,12 +5,11 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.18.0",
+    "cors": "^2.8.4",
     "express": "^4.15.4",
-    "mongodb": "^2.2.31",
-    "cors": "^2.8.4"
+    "mongodb-promisified": "^1.0.3"
   },
-  "devDependencies": {    
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "test",
     "start": "node server.js"

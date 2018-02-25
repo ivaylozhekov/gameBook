@@ -2,20 +2,24 @@ const express = require('express');
 const app = express();
 var cors = require('cors');
 var bodyParser = require('body-parser');
-const dataBase = require('./db');
-const db = new dataBase();
+const { DB, DBStatus } = require('./DB');
+const db = new DB();
 const baseUrl = '/api';
 
 app.use(cors());
 
-app.get(`${baseUrl}/books/:owner/:bookId`, function (req, res) {
-  db.getBookContent({owner: req.params.owner, ref: req.params.bookId}, function(data) {
+app.get(`${baseUrl}/books/:owner/:bookId`, async (req, res) => {
+  const { status, payload } = await db.getBookContent({owner: req.params.owner, ref: req.params.bookId});
+  if (status === DBStatus.OK) {
     let convertedData = {};
-    data.forEach(function(element) {
+    payload.forEach(element => {
       convertedData[element.id] = element;
     });
     res.send({data: convertedData});
-  });
+  } else {
+    res.send({error: payload});
+  }
+  
 });
 
 app.get(`${baseUrl}/lbc`, function (req, res) {
