@@ -73,10 +73,10 @@ class DB {
         }
     }
 
-    async insertInBook (book, content) {
+    async insertInBook (bookInfo, content) {
         try {
-            const client  = await MongoClient.connect(`${baseUrl}/${book.owner}`);
-            const bookCollection = await client.createCollection(book.ref);
+            const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
+            const bookCollection = await client.createCollection(bookInfo.ref);
             await bookCollection.insertMany(content);
             await client.close();
             return new DBResponse(DBStatus.OK);
@@ -85,11 +85,23 @@ class DB {
         }
     }
 
-    async getBookContent (book) {
+    async getBookContent (bookInfo) {
         try {
-            const client  = await MongoClient.connect(`${baseUrl}/${book.owner}`);
-            const bookCollection = await client.collection(book.ref);            
+            const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
+            const bookCollection = await client.collection(bookInfo.ref);            
             const result = await bookCollection.find({}).toArray();
+            await client.close();
+            return new DBResponse(DBStatus.OK, result);
+        } catch(err) {
+            return new DBResponse(DBStatus.ERROR, err);
+        }
+    }
+
+    async listUserBooks (username) {
+        try {
+            const client  = await MongoClient.connect(`${baseUrl}/${username}`);
+            const userCollection = await client.collection("books");    
+            const result = await userCollection.find().toArray();
             await client.close();
             return new DBResponse(DBStatus.OK, result);
         } catch(err) {

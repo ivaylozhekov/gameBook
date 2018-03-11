@@ -19,12 +19,15 @@ const db = new DB();
 //     console.log(data)
 // });
 
-db.insertInBook(
-    {id: 03, name: "Test Book 3", author: "John Snow", anyOtherInfo: "Bla bla", ref: "UUID_3", owner: "test_user"},
-    [
-        {id: 0, content: "bla bal bla", children: [1, 2, 3], parents: []},
-        {id: 1, content: "bla bal bla", children: [4, 5], parents: [0]}
-    ],
-).then(data => {
-    console.log(data)
-});
+// db.insertInBook(
+//     {id: 03, name: "Test Book 3", author: "John Snow", anyOtherInfo: "Bla bla", ref: "UUID_3", owner: "test_user"},
+//     [
+//         {id: 0, content: "bla bal bla", children: [1, 2, 3], parents: []},
+//         {id: 1, content: "bla bal bla", children: [4, 5], parents: [0]}
+//     ],
+// ).then(data => {
+//     console.log(data)
+// });
+db.listUserBooks('test_user').then(bookList => {
+    console.log(bookList);
+})
