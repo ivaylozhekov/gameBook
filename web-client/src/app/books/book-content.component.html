@@ -1,15 +1,19 @@
 <ul>
-    <li *ngFor="let data of bookData">
+    <li *ngFor="let data of currentBookData">
         <div>
-            <span>{{data.id}}</span>
-            <span>{{data.content}}</span>
-            <span *ngIf="data.children.length">
+            <span>{{data?.id}}</span>
+            <span>{{data?.content}}</span>
+            <span *ngIf="data?.children?.length && data.status === 0">
                 <span *ngFor="let link of data.children">
-                    <button>{{link.id || link}}</button>
+                    <button (click)="proceed(link.id || link)">{{link.id || link}}</button>
                 </span>
             </span>
+            <button (click)="add(data)">Add</button>
+            <div *ngIf="data.status === 1">
+                <input #newParagraph /><button (click)="save(data, newParagraph.value)">Save</button>
+            </div>
         </div>
     </li>
 </ul>
-<div>{{bookDataJson}}</div>
+<button (click)="reset()">Reset</button>
 <div class="d3-chart" #chart></div>
