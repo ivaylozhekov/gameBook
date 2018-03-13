@@ -29,17 +29,20 @@ const PARAGRAPH_STATUS = {
 })
 export class BookContentComponent implements OnChanges {
     @Input() bookContent: Array<BookContent>;
+    @Input() bookRef: string;
     @ViewChild('chart') private chartContainer: ElementRef;
     private bookData = {};
     private currentBookData = [];
     private bookDataJson = '';
+    constructor(private store: Store<any>, private bookService: BooksService) {}
     ngOnChanges(changes: any) {
-      this.bookData = changes.bookContent.currentValue;
-      // Object.keys(data).forEach(key => {
-      //   this.bookData.push(this.bookContent[key]);
-      // });
-      this.currentBookData = [{...this.bookData[0], status: PARAGRAPH_STATUS.PRISTINE}];
-
+      if (changes && changes.bookContent) {
+        this.bookData = changes.bookContent.currentValue;
+        // Object.keys(data).forEach(key => {
+        //   this.bookData.push(this.bookContent[key]);
+        // });
+        this.currentBookData = [{...this.bookData[0], status: PARAGRAPH_STATUS.PRISTINE}];
+      }
       // const keys = Object.keys(data);
       // if (keys.length) {
       //   const resultObject = [];
@@ -65,11 +68,14 @@ export class BookContentComponent implements OnChanges {
       data.status = PARAGRAPH_STATUS.READ;
       const newParagraph = {
         content: value,
-        parent: [data.id],
-        children: [],
-        status: PARAGRAPH_STATUS.PRISTINE
+        parent: [data._id],
+        children: []
       }
-      this.currentBookData.push(newParagraph);
+      this.bookService.saveParagraph('test_user', this.bookRef, newParagraph).subscribe(payload => {
+      })
+      // this.store.dispatch({ type: SAVE_PARAGRAPH, payload: newParagraph });
+      newParagraph['status'] = PARAGRAPH_STATUS.PRISTINE;
+      // this.currentBookData.push(newParagraph);
     }
 
     calcNestedStructure(data, currentKey, currentNode, keyMap) {

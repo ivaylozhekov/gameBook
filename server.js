@@ -8,14 +8,44 @@ const baseUrl = '/api';
 
 app.use(cors());
 
-app.get(`${baseUrl}/books/:owner/:bookId`, async (req, res) => {
-  const { status, payload } = await db.getBookContent({owner: req.params.owner, ref: req.params.bookId});
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
+
+app.get(`${baseUrl}/books/:owner/books/:bookId/:paragraphId`, async (req, res) => {
+  const { status, payload } = await db.getBookParagraphById({owner: req.params.owner, bookId: req.params.bookId, paragraphId: req.params.paragraphId});
   if (status === DBStatus.OK) {
     let convertedData = {};
     payload.forEach(element => {
       convertedData[element.id] = element;
     });
     res.send({data: convertedData});
+  } else {
+    res.send({error: payload});
+  }
+  
+});
+
+app.get(`${baseUrl}/books/:owner/books`, async (req, res) => {
+  const { status, payload } = await db.listUserBooks(req.params.owner);
+  if (status === DBStatus.OK) {
+    let convertedData = {};
+    payload.forEach(element => {
+      convertedData[element.id] = element;
+    });
+    res.send({data: convertedData});
+  } else {
+    res.send({error: payload});
+  }
+  
+});
+
+app.post(`${baseUrl}/books/:owner/books/:bookId`, async (req, res) => {
+  const { status, payload } = await db.addBookParagraph({...req.params, paragraph: req.body});
+
+  if (status === DBStatus.OK) {
+    res.send({data: payload});
   } else {
     res.send({error: payload});
   }

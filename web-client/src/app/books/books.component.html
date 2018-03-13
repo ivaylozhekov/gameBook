@@ -1,1 +1,6 @@
-<app-book-content [bookContent]="bookContent"></app-book-content>
+<li *ngFor="let book of bookList">
+        <span>{{book.id}}</span>
+        <span>{{book.name}}</span>
+        <button (click)="open(book)">Open</button>
+</li>
+<app-book-content [bookContent]="bookContent" [bookRef]="bookRef"></app-book-content>

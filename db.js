@@ -1,4 +1,5 @@
-const MongoClient = require('mongodb-promisified')().MongoClient;
+const Mongo = require('mongodb-promisified')();
+const MongoClient = Mongo.MongoClient;
 const baseUrl = "mongodb://localhost:27017";
 const usersUrl = `${baseUrl}/users`;
 const { promisify } = require('util');
@@ -61,10 +62,10 @@ class DB {
             const bookCollection = await client.collection("books");
             await bookCollection.insertOne(bookData);
             console.log("Book created!");
-            const bookRefCollection = await client.createCollection(bookData.ref);
-            console.log(`Collection for ${bookData.ref} created!`);
-            const bookAssetsCollection = await client.createCollection(`${bookData.ref}_Assets`);
-            console.log(`Collection for ${bookData.ref}_Assets created!`);
+            const bookRefCollection = await client.createCollection(bookData.bookId);
+            console.log(`Collection for ${bookData.bookId} created!`);
+            const bookAssetsCollection = await client.createCollection(`${bookData.bookId}_Assets`);
+            console.log(`Collection for ${bookData.bookId}_Assets created!`);
 
             await client.close();
             return new DBResponse(DBStatus.OK);
@@ -76,7 +77,7 @@ class DB {
     async insertInBook (bookInfo, content) {
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
-            const bookCollection = await client.createCollection(bookInfo.ref);
+            const bookCollection = await client.createCollection(bookInfo.bookId);
             await bookCollection.insertMany(content);
             await client.close();
             return new DBResponse(DBStatus.OK);
@@ -88,8 +89,33 @@ class DB {
     async getBookContent (bookInfo) {
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
-            const bookCollection = await client.collection(bookInfo.ref);            
+            const bookCollection = await client.collection(bookInfo.bookId);            
             const result = await bookCollection.find({}).toArray();
+            await client.close();
+            return new DBResponse(DBStatus.OK, result);
+        } catch(err) {
+            return new DBResponse(DBStatus.ERROR, err);
+        }
+    }
+
+    async getBookParagraphById (bookInfo) {
+        try {
+            const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
+            const bookCollection = await client.collection(bookInfo.bookId);
+            const result = await bookCollection.find({_id: new Mongo.ObjectId(bookInfo.paragraphId)}).toArray();
+            await client.close();
+            return new DBResponse(DBStatus.OK, result);
+        } catch(err) {
+            return new DBResponse(DBStatus.ERROR, err);
+        }
+    }
+
+    async addBookParagraph (bookInfo) {
+        try {
+            console.log(bookInfo);
+            const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
+            const bookCollection = await client.collection(bookInfo.bookId);
+            const result = await bookCollection.insertOne(bookInfo.paragraph);
             await client.close();
             return new DBResponse(DBStatus.OK, result);
         } catch(err) {
