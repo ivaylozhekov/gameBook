@@ -42,7 +42,7 @@ app.get(`${baseUrl}/books/:owner/books`, async (req, res) => {
 });
 
 app.post(`${baseUrl}/books/:owner/books/:bookId`, async (req, res) => {
-  const { status, payload } = await db.addBookParagraph({...req.params, paragraph: req.body});
+  const { status, payload } = await db.addBookParagraph({...req.params, paragraph: req.body.payload, parentId: req.body.parentId});
 
   if (status === DBStatus.OK) {
     res.send({data: payload});

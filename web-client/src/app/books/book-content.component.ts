@@ -68,10 +68,13 @@ export class BookContentComponent implements OnChanges {
       data.status = PARAGRAPH_STATUS.READ;
       const newParagraph = {
         content: value,
-        parent: [data._id],
+        parents: [data._id],
         children: []
       }
-      this.bookService.saveParagraph('test_user', this.bookRef, newParagraph).subscribe(payload => {
+      this.bookService.saveParagraph('test_user', this.bookRef, {
+        payload: newParagraph,
+        parentId: data._id
+      }).subscribe(payload => {
       })
       // this.store.dispatch({ type: SAVE_PARAGRAPH, payload: newParagraph });
       newParagraph['status'] = PARAGRAPH_STATUS.PRISTINE;

@@ -103,6 +103,7 @@ class DB {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
             const bookCollection = await client.collection(bookInfo.bookId);
             const result = await bookCollection.find({_id: new Mongo.ObjectId(bookInfo.paragraphId)}).toArray();
+            
             await client.close();
             return new DBResponse(DBStatus.OK, result);
         } catch(err) {
@@ -112,13 +113,18 @@ class DB {
 
     async addBookParagraph (bookInfo) {
         try {
-            console.log(bookInfo);
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
             const bookCollection = await client.collection(bookInfo.bookId);
             const result = await bookCollection.insertOne(bookInfo.paragraph);
+            const updateResult = await bookCollection.updateOne(
+                {_id: new Mongo.ObjectId(bookInfo.parentId)},
+                { $push: { children:  result.insertedId } }
+            );
+            console.log(updateResult);
             await client.close();
-            return new DBResponse(DBStatus.OK, result);
+            return new DBResponse(DBStatus.OK, result.ops);
         } catch(err) {
+            console.log(err);
             return new DBResponse(DBStatus.ERROR, err);
         }
     }
