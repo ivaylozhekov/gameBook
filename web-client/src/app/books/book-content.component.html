@@ -1,16 +1,16 @@
 <ul>
-    <li *ngFor="let data of currentBookData">
+    <li *ngFor="let data of bookContent">
         <div>
             <span>{{data?.id}}</span>
             <span>{{data?.content}}</span>
-            <span *ngIf="data?.children?.length && data.status === 0">
+            <span *ngIf="data?.children?.length">
                 <span *ngFor="let link of data.children">
-                    <button (click)="proceed(link.id || link)">{{link.id || link}}</button>
+                    <button (click)="proceed(link.ref)">{{link.linkText}}</button>
                 </span>
             </span>
             <button (click)="add(data)">Add</button>
             <div *ngIf="data.status === 1">
-                <input #newParagraph /><button (click)="save(data, newParagraph.value)">Save</button>
+                <input #newLinkText /><input #newParagraphText /><button (click)="save(data, newLinkText.value, newParagraphText.value)">Save</button>
             </div>
         </div>
     </li>

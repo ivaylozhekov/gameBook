@@ -4,7 +4,7 @@ export const UPDATE_USER = 'UPDATE_USER';
 export const CLEAR_USERS = 'CLEAR_USERS';
 export const CLEAR_USER_INFO = 'CLEAR_USER_INFO';
 const initialUsers = []
-export const users = (state = initialUsers, { type, payload }) => {
+export function users(state = initialUsers, { type, payload }) {
   switch (type) {
     case SET_USERS:
       return payload;

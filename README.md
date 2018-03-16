@@ -17,3 +17,5 @@ show collections - lists all collections in database
 db.<collection_name>.find() - list <collection_name> content
 
 
+remove from array:
+db.UUID_1.update({"_id": ObjectId("59b6e5a4bd7f64415c709c01")}, {$pull: {children: { linkText: "1"}}})

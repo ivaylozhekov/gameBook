@@ -1,8 +1,10 @@
-export class Book{
+export class Book {
   name: string;
   owner: string;
   author: string;
   content: Array<BookContent>
+  entry: string;
+  ref: string;
 }
 
 export class BookContent {

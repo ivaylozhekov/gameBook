@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { provideStore } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { users } from './users.reducer';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
@@ -17,10 +17,10 @@ import { UsersComponent } from './users.component';
   ],
   imports: [
     CommonModule,
-    UsersRoutingModule
+    UsersRoutingModule,
+    StoreModule.forRoot({users})
   ],
   providers: [
-    provideStore({users}),
     UserService
   ]
 })

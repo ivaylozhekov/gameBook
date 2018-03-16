@@ -16,11 +16,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.get(`${baseUrl}/books/:owner/books/:bookId/:paragraphId`, async (req, res) => {
   const { status, payload } = await db.getBookParagraphById({owner: req.params.owner, bookId: req.params.bookId, paragraphId: req.params.paragraphId});
   if (status === DBStatus.OK) {
-    let convertedData = {};
-    payload.forEach(element => {
-      convertedData[element.id] = element;
-    });
-    res.send({data: convertedData});
+    // let convertedData = {};
+    // payload.forEach(element => {
+    //   convertedData[element.id] = element;
+    // });
+    res.send({data: payload});
   } else {
     res.send({error: payload});
   }
@@ -42,8 +42,7 @@ app.get(`${baseUrl}/books/:owner/books`, async (req, res) => {
 });
 
 app.post(`${baseUrl}/books/:owner/books/:bookId`, async (req, res) => {
-  const { status, payload } = await db.addBookParagraph({...req.params, paragraph: req.body.payload, parentId: req.body.parentId});
-
+  const { status, payload } = await db.addBookParagraph({...req.params, parentId: req.body.parentId, linkText: req.body.linkText, paragraph: req.body.payload});
   if (status === DBStatus.OK) {
     res.send({data: payload});
   } else {
