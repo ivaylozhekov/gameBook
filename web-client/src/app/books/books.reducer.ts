@@ -2,22 +2,22 @@ import { BookActions } from './book.actions';
 
 const initialState = {
   bookList: {},
-  selectedBookContent: []
+  selectedBook: {},
+  selectedBookContent: {}
 }
 export function books(state = initialState, { type, payload }) {
+  const content = state.selectedBookContent;
   switch (type) {
+    case BookActions.SET_SELECTED_BOOK:
+      return { ...state, selectedBook: payload };
     case BookActions.SET_BOOK_CONTENT:
-      return { ...state, selectedBookContent: [...state.selectedBookContent, payload ] };
+      content[payload._id] = payload;
+      return { ...state, selectedBookContent: content };
     case BookActions.SET_BOOK_LIST:
       return { ...state, bookList: payload };
     case BookActions.NEW_PARAGRAPH_ADDED:
-      const content = state.selectedBookContent.map(paragraph => {
-        if (paragraph._id === payload.updatedParent._id) {
-          return payload.updatedParent;
-        }
-        return paragraph;
-      });
-      content.push(payload.createdParagraph);
+      content[payload.updatedParent._id] = payload.updatedParent;
+      content[payload.createdParagraph._id] = payload.createdParagraph;
       return { ...state, selectedBookContent: content };
     default:
       return state;

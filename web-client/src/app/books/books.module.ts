@@ -10,11 +10,13 @@ import { BookContentComponent } from './book-content.component';
 import { BookEffects } from './book.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { BookActions } from './book.actions';
+import { BookParagraphComponent } from './book-paragraph.component';
 
 @NgModule({
   declarations: [
     BooksComponent,
-    BookContentComponent
+    BookContentComponent,
+    BookParagraphComponent
   ],
   imports: [
     CommonModule,

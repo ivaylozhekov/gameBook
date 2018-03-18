@@ -1,21 +1,8 @@
-import { Component, OnInit, OnChanges, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
-import { Scheduler } from 'rxjs/Scheduler';
 import { Book, BookContent } from './book';
-import { BooksService } from './books.service';
 import * as d3 from 'd3-hierarchy';
-
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mapTo';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/operator/withLatestFrom';
-import 'rxjs/add/operator/distinctUntilChanged';
 import { BookActions } from './book.actions';
 
 const PARAGRAPH_STATUS = {
@@ -28,14 +15,29 @@ const PARAGRAPH_STATUS = {
   templateUrl: './book-content.component.html',
   styleUrls: ['./book-content.component.scss']
 })
-export class BookContentComponent implements OnChanges {
-    @Input() bookContent: Array<BookContent>;
-    @Input() book: Book;
+export class BookContentComponent implements OnInit {
+    public bookContent;
+    public bookContentKeys = [];
+    public book: Book;
     @ViewChild('chart') private chartContainer: ElementRef;
-    constructor(private store: Store<any>, private bookService: BooksService, private bookActions: BookActions) {}
-    ngOnChanges(changes: any) {
-      if (changes && changes.bookContent) {}
+    booksStore: Observable<any>;
+
+    constructor(private store: Store<any>, private bookActions: BookActions) {
+      this.booksStore = store.select('books');
     }
+
+    ngOnInit() {
+      this.booksStore.subscribe(
+        data => {
+          this.bookContent = data.selectedBookContent;
+          this.bookContentKeys = Object.keys(data.selectedBookContent);
+          this.book = data.selectedBook;
+        }
+      );
+    }
+    // ngOnChanges(changes: any) {
+    //   if (changes && changes.bookContent) {}
+    // }
 
     proceed(id) {
       this.bookActions.getBookParagraph(this.book.owner, this.book.ref, id);

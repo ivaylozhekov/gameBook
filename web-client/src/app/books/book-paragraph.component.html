@@ -1,0 +1,15 @@
+<br>
+<div *ngIf="bookParagraph">
+    <!-- <span>{{bookParagraph?.id}}</span> -->
+    <span>{{bookParagraph.content}}</span>
+    <button (click)="add(bookParagraph)">Add</button>
+    <div *ngIf="bookParagraph.status === 1">
+        <input #newLinkText /><input #newParagraphText /><button (click)="save(bookParagraph, newLinkText.value, newParagraphText.value)">Save</button>
+    </div>
+    <div *ngIf="bookParagraph.children?.length">
+        <span *ngFor="let link of bookParagraph.children">
+            <button (click)="proceed(link.ref)">{{link.linkText}}</button>
+            <app-book-paragraph [bookParagraph]="bookContent[link.ref]" (onSave)="onSave"></app-book-paragraph>
+        </span>
+    </div>
+</div>

@@ -1,19 +1,24 @@
-<ul>
-    <li *ngFor="let data of bookContent">
+<!-- <ul>
+    <li *ngFor="let key of bookContentKeys">
         <div>
-            <span>{{data?.id}}</span>
-            <span>{{data?.content}}</span>
-            <span *ngIf="data?.children?.length">
-                <span *ngFor="let link of data.children">
+            <span>{{bookContent[key].id}}</span>
+            <span>{{bookContent[key].content}}</span>
+            <span *ngIf="bookContent[key].children?.length">
+                <span *ngFor="let link of bookContent[key].children">
                     <button (click)="proceed(link.ref)">{{link.linkText}}</button>
                 </span>
             </span>
-            <button (click)="add(data)">Add</button>
-            <div *ngIf="data.status === 1">
-                <input #newLinkText /><input #newParagraphText /><button (click)="save(data, newLinkText.value, newParagraphText.value)">Save</button>
+            <button (click)="add(bookContent[key])">Add</button>
+            <div *ngIf="bookContent[key].status === 1">
+                <input #newLinkText /><input #newParagraphText /><button (click)="save(bookContent[key], newLinkText.value, newParagraphText.value)">Save</button>
             </div>
         </div>
     </li>
 </ul>
+<button (click)="reset()">Reset</button>
+<div class="d3-chart" #chart></div> -->
+
+
+<app-book-paragraph [bookParagraph]="bookContent[bookContentKeys[0]]" (onSave)="save($event.data, $event.linkText, $event.paragraphValue)"></app-book-paragraph>
 <button (click)="reset()">Reset</button>
 <div class="d3-chart" #chart></div>

@@ -26,6 +26,14 @@ export class BookEffects {
         .catch(() => of({ type: 'GENERAL_ERROR' }))
     );
 
+    @Effect() getBookList$ = this.actions$
+    .ofType('GET_BOOK_LIST')
+    .map((action: Action) => action.payload)
+    .mergeMap((payload: any) => this.bookService.getBooks(payload.owner)
+        .map(data => this.bookActions.setBookListAction(data))
+        .catch(() => of({ type: 'GENERAL_ERROR' }))
+    );
+
     constructor(
         private bookService: BooksService,
         private actions$: Actions,
