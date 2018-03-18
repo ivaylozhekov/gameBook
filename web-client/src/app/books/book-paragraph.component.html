@@ -9,7 +9,7 @@
     <div *ngIf="bookParagraph.children?.length">
         <span *ngFor="let link of bookParagraph.children">
             <button (click)="proceed(link.ref)">{{link.linkText}}</button>
-            <app-book-paragraph [bookParagraph]="bookContent[link.ref]" (onSave)="onSave"></app-book-paragraph>
+            <app-book-paragraph [bookParagraph]="bookContent[link.ref]" (onSave)="onSave.emit($event)"></app-book-paragraph>
         </span>
     </div>
 </div>
