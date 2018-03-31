@@ -17,7 +17,6 @@ const PARAGRAPH_STATUS = {
 })
 export class BookContentComponent implements OnInit {
     public bookContent;
-    public bookContentKeys = [];
     public book: Book;
     @ViewChild('chart') private chartContainer: ElementRef;
     booksStore: Observable<any>;
@@ -30,7 +29,6 @@ export class BookContentComponent implements OnInit {
       this.booksStore.subscribe(
         data => {
           this.bookContent = data.selectedBookContent;
-          this.bookContentKeys = Object.keys(data.selectedBookContent);
           this.book = data.selectedBook;
         }
       );
@@ -40,15 +38,16 @@ export class BookContentComponent implements OnInit {
     // }
 
     proceed(id) {
-      this.bookActions.getBookParagraph(this.book.owner, this.book.ref, id);
+      this.bookActions.getBookParagraph(this.book.owner, this.book._id, id);
     }
 
     reset() {
+      this.bookActions.resetSelectedBook();
       // this.currentBookData = [{...this.bookData[0], status: PARAGRAPH_STATUS.PRISTINE}];
     }
 
     add(data) {
-      data.status = PARAGRAPH_STATUS.NEW;
+      // data.status = PARAGRAPH_STATUS.NEW;
     }
 
     save(data, linkText, paragraphValue) {
@@ -63,7 +62,7 @@ export class BookContentComponent implements OnInit {
         linkText,
         parentId: data._id
       }
-      this.bookActions.addNewParagraph(this.book.owner, this.book.ref, payload);
+      this.bookActions.addNewParagraph(this.book.owner, this.book._id, payload);
       // newParagraph['status'] = PARAGRAPH_STATUS.PRISTINE;
     }
 

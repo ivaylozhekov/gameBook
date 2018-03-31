@@ -4,7 +4,7 @@ export class Book {
   author: string;
   content: Array<BookContent>
   entry: string;
-  ref: string;
+  _id: string;
 }
 
 export class BookContent {
@@ -12,4 +12,12 @@ export class BookContent {
   content: string;
   parents: Array<number>;
   neededAssets: Array<number>;
+}
+
+export class BookListItem {
+  name: string;
+  owner: string;
+  author: string;
+  anyOtherInfo: string;
+  _id: string;
 }

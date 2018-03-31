@@ -11,6 +11,7 @@ import { BookEffects } from './book.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { BookActions } from './book.actions';
 import { BookParagraphComponent } from './book-paragraph.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { BookParagraphComponent } from './book-paragraph.component';
   imports: [
     CommonModule,
     BooksRoutingModule,
+    FormsModule,
     StoreModule.forRoot({books}),
     EffectsModule.forRoot([BookEffects])
   ],

@@ -24,7 +24,6 @@ app.get(`${baseUrl}/books/:owner/books/:bookId/:paragraphId`, async (req, res) =
   } else {
     res.send({error: payload});
   }
-  
 });
 
 app.get(`${baseUrl}/books/:owner/books`, async (req, res) => {
@@ -32,13 +31,12 @@ app.get(`${baseUrl}/books/:owner/books`, async (req, res) => {
   if (status === DBStatus.OK) {
     let convertedData = {};
     payload.forEach(element => {
-      convertedData[element.id] = element;
+      convertedData[element._id] = element;
     });
     res.send({data: convertedData});
   } else {
     res.send({error: payload});
   }
-  
 });
 
 app.post(`${baseUrl}/books/:owner/books/:bookId`, async (req, res) => {
@@ -48,7 +46,15 @@ app.post(`${baseUrl}/books/:owner/books/:bookId`, async (req, res) => {
   } else {
     res.send({error: payload});
   }
-  
+});
+
+app.post(`${baseUrl}/books/:owner/books`, async (req, res) => {
+  const { status, payload } = await db.createBook(req.body);
+  if (status === DBStatus.OK) {
+    res.send({data: payload});
+  } else {
+    res.send({error: payload});
+  }
 });
 
 app.get(`${baseUrl}/lbc`, function (req, res) {

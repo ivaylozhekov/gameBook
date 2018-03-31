@@ -30,6 +30,12 @@ export class BooksService {
       .catch(this.handleError);
   }
 
+  createBook(book) {
+    return this.http.post(`${this.booksUrl}/${book.owner}/books`, book)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
   saveParagraph(owner, bookId, data) {
     return this.http.post(`${this.booksUrl}/${owner}/books/${bookId}`, data)
       .map(this.extractData)

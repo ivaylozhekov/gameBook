@@ -2,23 +2,32 @@ import { BookActions } from './book.actions';
 
 const initialState = {
   bookList: {},
-  selectedBook: {},
+  selectedBook: null,
   selectedBookContent: {}
 }
 export function books(state = initialState, { type, payload }) {
-  const content = state.selectedBookContent;
   switch (type) {
     case BookActions.SET_SELECTED_BOOK:
-      return { ...state, selectedBook: payload };
+      return { ...state, selectedBook: payload, selectedBookContent: {} };
     case BookActions.SET_BOOK_CONTENT:
-      content[payload._id] = payload;
-      return { ...state, selectedBookContent: content };
+      state.selectedBookContent[payload._id] = payload;
+      return { ...state, selectedBookContent: state.selectedBookContent };
     case BookActions.SET_BOOK_LIST:
       return { ...state, bookList: payload };
     case BookActions.NEW_PARAGRAPH_ADDED:
-      content[payload.updatedParent._id] = payload.updatedParent;
-      content[payload.createdParagraph._id] = payload.createdParagraph;
-      return { ...state, selectedBookContent: content };
+      if (payload.updatedParent.paragraph) {
+        state.selectedBookContent[payload.updatedParent.paragraph._id] = payload.updatedParent.paragraph;
+      } else if (payload.updatedParent.bookEntry) {
+        state.bookList[payload.updatedParent.bookEntry._id] = payload.updatedParent.bookEntry;
+        state.selectedBook = payload.updatedParent.bookEntry
+      }
+      state.selectedBookContent[payload.createdParagraph._id] = payload.createdParagraph;
+      return { ...state, selectedBookContent: state.selectedBookContent, bookList: state.bookList, selectedBook: state.selectedBook };
+    case BookActions.BOOK_CREATED:
+      state.bookList[payload._id] = payload;
+      return { ...state, bookList: state.bookList, selectedBook: payload };
+    case BookActions.RESET_SELECTED_BOOK:
+      return { ...state, selectedBookContent: {}, selectedBook: null };
     default:
       return state;
   }

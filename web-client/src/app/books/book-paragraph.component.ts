@@ -17,7 +17,7 @@ const PARAGRAPH_STATUS = {
 })
 export class BookParagraphComponent implements OnInit {
     public bookContent = {};
-    private book;
+    private book: Book;
     @Input() bookParagraph;
     @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('chart') private chartContainer: ElementRef;
@@ -40,15 +40,15 @@ export class BookParagraphComponent implements OnInit {
     // }
 
     proceed(id) {
-      this.bookActions.getBookParagraph(this.book.owner, this.book.ref, id);
+      this.bookActions.getBookParagraph(this.book.owner, this.book._id, id);
     }
 
     reset() {
       // this.currentBookData = [{...this.bookData[0], status: PARAGRAPH_STATUS.PRISTINE}];
     }
 
-    add(data) {
-      data.status = PARAGRAPH_STATUS.NEW;
+    add() {
+      this.bookParagraph.status = PARAGRAPH_STATUS.NEW;
     }
 
     // save(data, linkText, paragraphValue) {

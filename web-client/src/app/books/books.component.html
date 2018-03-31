@@ -1,6 +1,18 @@
-<li *ngFor="let book of bookList">
-        <span>{{book.id}}</span>
+<li *ngFor="let book of bookList; let i = index">
+        <span>{{i+1}}</span>
         <span>{{book.name}}</span>
         <button (click)="open(book)">Open</button>
 </li>
-<app-book-content></app-book-content>
+<div *ngIf="!newBookMode">
+        <app-book-content></app-book-content>
+        <button (click)="createBook()">New Book</button>
+</div>
+<div *ngIf="newBookMode">
+        <div>
+                Name: <input [(ngModel)]="newBook.name" />
+        </div>
+        <div>
+                Author: <input [(ngModel)]="newBook.author" />
+        </div>
+        <button (click)="saveBook()">Save</button>
+</div>

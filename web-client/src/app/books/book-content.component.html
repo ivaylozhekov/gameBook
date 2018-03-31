@@ -18,7 +18,11 @@
 <button (click)="reset()">Reset</button>
 <div class="d3-chart" #chart></div> -->
 
-
-<app-book-paragraph [bookParagraph]="bookContent[bookContentKeys[0]]" (onSave)="save($event.data, $event.linkText, $event.paragraphValue)"></app-book-paragraph>
+<div *ngIf="book">
+    <app-book-paragraph [bookParagraph]="bookContent[book.entry] || {}" (onSave)="save($event.data, $event.linkText, $event.paragraphValue)"></app-book-paragraph>
+</div>
+<!-- <div *ngIf="book && !book.entry">
+    <button (click)="add()">Start the book</button>
+</div> -->
 <button (click)="reset()">Reset</button>
 <div class="d3-chart" #chart></div>

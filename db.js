@@ -56,19 +56,19 @@ class DB {
         });
     }
 
-    async createBook(userData, bookData) {
+    async createBook(bookData) {
         try {
-            const client  = await MongoClient.connect(`${baseUrl}/${userData.username}`);
+            const client  = await MongoClient.connect(`${baseUrl}/${bookData.owner}`);
             const bookCollection = await client.collection("books");
-            await bookCollection.insertOne(bookData);
+            const book = await bookCollection.insertOne(bookData);
             console.log("Book created!");
-            const bookRefCollection = await client.createCollection(bookData.bookId);
-            console.log(`Collection for ${bookData.bookId} created!`);
-            const bookAssetsCollection = await client.createCollection(`${bookData.bookId}_Assets`);
-            console.log(`Collection for ${bookData.bookId}_Assets created!`);
+            const bookRefCollection = await client.createCollection(`Book_${book.insertedId}`);
+            console.log(`Collection for Book_${book.insertedId} created!`);
+            const bookAssetsCollection = await client.createCollection(`Book_${book.insertedId}_Assets`);
+            console.log(`Collection for Book_${book.insertedId}_Assets created!`);
 
             await client.close();
-            return new DBResponse(DBStatus.OK);
+            return new DBResponse(DBStatus.OK, book.ops[0]);
         } catch(err) {
             return new DBResponse(DBStatus.ERROR, err);
         }
@@ -77,7 +77,7 @@ class DB {
     async insertInBook (bookInfo, content) {
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
-            const bookCollection = await client.createCollection(bookInfo.bookId);
+            const bookCollection = await client.createCollection(this.getBookCollectionById(bookInfo.bookId));
             await bookCollection.insertMany(content);
             await client.close();
             return new DBResponse(DBStatus.OK);
@@ -89,7 +89,7 @@ class DB {
     async getBookContent (bookInfo) {
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
-            const bookCollection = await client.collection(bookInfo.bookId);            
+            const bookCollection = await client.collection(this.getBookCollectionById(bookInfo.bookId));            
             const result = await bookCollection.find({}).toArray();
             await client.close();
             return new DBResponse(DBStatus.OK, result);
@@ -101,7 +101,7 @@ class DB {
     async getBookParagraphById (bookInfo) {
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
-            const bookCollection = await client.collection(bookInfo.bookId);
+            const bookCollection = await client.collection(this.getBookCollectionById(bookInfo.bookId));
             const result = await bookCollection.find({_id: new Mongo.ObjectId(bookInfo.paragraphId)}).toArray();
             await client.close();
             return new DBResponse(DBStatus.OK, result[0]);
@@ -113,15 +113,32 @@ class DB {
     async addBookParagraph (bookInfo) {
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
-            const bookCollection = await client.collection(bookInfo.bookId);
-            const result = await bookCollection.insertOne(bookInfo.paragraph);
-            const updateResult = await bookCollection.findOneAndUpdate(
-                {_id: new Mongo.ObjectId(bookInfo.parentId)},
-                { $push: { children:  { linkText: bookInfo.linkText, ref: result.insertedId } } },
-                { returnOriginal: false }
-            );
+            const bookData = await client.collection(this.getBookCollectionById(bookInfo.bookId));
+            const result = await bookData.insertOne(bookInfo.paragraph);
+            let updatedParentParagraph = {};
+            let updatedBookEntry = {};
+            if (bookInfo.parentId) {
+                updatedParentParagraph = await bookData.findOneAndUpdate(
+                    { _id: new Mongo.ObjectId(bookInfo.parentId) },
+                    { $push: { children:  { linkText: bookInfo.linkText, ref: result.insertedId } } },
+                    { returnOriginal: false }
+                );
+            } else {
+                const bookCollection = await client.collection("books");
+                updatedBookEntry = await bookCollection.findOneAndUpdate(
+                    { _id: new Mongo.ObjectId(bookInfo.bookId) },
+                    { $set: { entry: result.insertedId } },
+                    { returnOriginal: false }
+                );
+            }
             await client.close();
-            return new DBResponse(DBStatus.OK, { createdParagraph: result.ops[0], updatedParent: updateResult.value });
+            return new DBResponse(DBStatus.OK, { 
+                createdParagraph: result.ops[0],
+                updatedParent: {
+                    paragraph: updatedParentParagraph.value,
+                    bookEntry: updatedBookEntry.value
+                }
+            });
         } catch(err) {
             console.log(err);
             return new DBResponse(DBStatus.ERROR, err);
@@ -138,6 +155,10 @@ class DB {
         } catch(err) {
             return new DBResponse(DBStatus.ERROR, err);
         }
+    }
+
+    getBookCollectionById(bookId) {
+        return `Book_${bookId}`
     }
 }
 
