@@ -1,9 +1,10 @@
+import { BooksComponent } from './../books/books.component';
+import { BookContent } from './../books/book';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UsersComponent } from './users.component';
 import { UserListComponent } from './user-list/user-list.component';
-import { UserDetailsComponent } from './user-details/user-details.component';
 
 const usersRoutes: Routes = [
   {
@@ -11,7 +12,7 @@ const usersRoutes: Routes = [
     children: [
       {
         path: ':id',
-        component: UserDetailsComponent
+        loadChildren: './user-details/user-details.module#UserDetailsModule',
       }, {
         path: '',
         component: UsersComponent,

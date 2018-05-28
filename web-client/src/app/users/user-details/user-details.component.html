@@ -1,11 +1,12 @@
 <div>
   <h2>User Books:</h2>
-  <div *ngIf="user && user.info">
+  <router-outlet></router-outlet>
+  <!-- <div *ngIf="user && user.info">
     {{user.name}} / {{user.info.capital}}, {{user.info.country}}
     <h3>Edit Details</h3>
     <div> country: <input #country></div>
     <div> capital: <input #capital></div>
 
     <button (click)="updateUeser(country.value, capital.value)">Update</button>
-  </div>
+  </div> -->
 </div>

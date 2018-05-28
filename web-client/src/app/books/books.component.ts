@@ -6,6 +6,7 @@ import { d3 } from 'd3-hierarchy';
 
 import { BookActions } from './book.actions';
 import { UserService } from 'app/users/user.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-books',
@@ -17,10 +18,15 @@ export class BooksComponent implements OnInit {
   public bookList = [];
   public newBookMode = false;
   public newBook = new BookListItem();
-
-  constructor(private store: Store<any>, private bookActions: BookActions) {
+  private sub;
+  constructor(private store: Store<any>, private bookActions: BookActions, private route: ActivatedRoute) {
     this.booksStore = store.select('books');
-    this.bookActions.getBookList('test_user');
+
+    const userId = route.pathFromRoot.find(path => (path.routeConfig || {}).path === ':id').snapshot.params.id;
+    this.bookActions.getBookList(userId);
+    // this.sub = route.pathFromRoot.find(path => (path.routeConfig || {}).path === ':id').params.subscribe(params => {
+    //   this.bookActions.getBookList(params.id);
+    // });
   }
 
   open(book: Book) {
