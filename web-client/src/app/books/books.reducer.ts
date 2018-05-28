@@ -10,8 +10,12 @@ export function books(state = initialState, { type, payload }) {
     case BookActions.SET_SELECTED_BOOK:
       return { ...state, selectedBook: payload, selectedBookContent: {} };
     case BookActions.SET_BOOK_CONTENT:
-      state.selectedBookContent[payload._id] = payload;
-      return { ...state, selectedBookContent: state.selectedBookContent };
+    debugger;
+      return {
+        ...state,
+        selectedBookContent: {...state.selectedBookContent, [payload._id]: payload},
+        selectedBook: payload.parents && payload.parents.length === 0 ? {...state.selectedBook, entry: payload._id } : state.selectedBook
+      };
     case BookActions.SET_BOOK_LIST:
       return { ...state, bookList: payload };
     case BookActions.NEW_PARAGRAPH_ADDED:

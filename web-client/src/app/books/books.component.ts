@@ -5,6 +5,7 @@ import { Book, BookListItem } from './book';
 import { d3 } from 'd3-hierarchy';
 
 import { BookActions } from './book.actions';
+import { UserService } from 'app/users/user.service';
 
 @Component({
   selector: 'app-books',
@@ -24,9 +25,9 @@ export class BooksComponent implements OnInit {
 
   open(book: Book) {
     this.bookActions.setSelectedBook(book);
-    if (book.entry) {
-      this.bookActions.getBookParagraph(book.owner, book._id, book.entry);
-    }
+    // if (book.entry) {
+      this.bookActions.getBookEntry(book.owner, book._id);
+    // }
   }
 
   createBook() {

@@ -29,7 +29,7 @@ export class UserDetailsComponent {
     this.route.paramMap
     .combineLatest(this.users, (stream2Value, stream1Value) => [stream2Value, stream1Value])
       .subscribe(([params, data]: [any, [User]]) => {
-        this.user = data ? data.filter(user => user.id === parseInt(params.get('id')))[0] : null
+        this.user = data ? data.find(user => user.id === parseInt(params.get('id'))) : null
       });
   }
   updateUeser(country, capital) {

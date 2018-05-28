@@ -54,7 +54,7 @@ export class BookContentComponent implements OnInit {
       data.status = PARAGRAPH_STATUS.READ;
       const newParagraph = {
         content: paragraphValue,
-        parents: [data._id],
+        parents: data._id ? [data._id] : [],
         children: []
       }
       const payload = {

@@ -5,6 +5,7 @@ import { Action } from '../utils/action';
 
 @Injectable()
 export class BookActions {
+  static GET_BOOK_ENTRY = 'GET_BOOK_ENTRY';
   static GET_BOOK_PARAGRAPH = 'GET_BOOK_PARAGRAPH';
   static SET_BOOK_CONTENT = 'SET_BOOK_CONTENT';
   static GET_BOOK_LIST = 'GET_BOOK_LIST';
@@ -29,6 +30,10 @@ export class BookActions {
     this.store.dispatch(this.createBookAction(book));
   }
 
+  getBookEntry(bookOwner, bookId) {
+    this.store.dispatch(this.getBookEntryAction({ owner: bookOwner, bookId }));
+  }
+
   getBookParagraph(bookOwner, bookId, paragraphId) {
     this.store.dispatch(this.getBookParagraphAction({ owner: bookOwner, bookId, getBookParagraph: paragraphId }));
   }
@@ -39,6 +44,10 @@ export class BookActions {
 
   setSelectedBook(payload) {
     this.store.dispatch(this.setSelectedBookAction(payload));
+  }
+
+  getBookEntryAction(payload): Action {
+    return { type: BookActions.GET_BOOK_ENTRY, payload };
   }
 
   getBookParagraphAction(payload): Action {

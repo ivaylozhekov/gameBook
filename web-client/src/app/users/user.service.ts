@@ -12,21 +12,29 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
 import { SET_USERS, USER_INFO, CLEAR_USERS, CLEAR_USER_INFO } from './users.reducer';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class UserService {
 
-  private usersUrl = 'http://localhost:3000/users';  // URL to web API
+  private usersUrl = 'http://localhost:3000/api/users';  // URL to web API
   private infoUrl = 'http://localhost:3000/user/info';  // URL to web API
 
-  constructor(private store: Store<any>, private http: Http) { }
+  constructor(private store: Store<any>, private http: Http, private router: Router) {
+    this.getCurrentUser();
+   }
 
   getUsers() {
     const requestUsersStream = this.http.get(this.usersUrl)
       .map(this.extractData)
       .catch(this.handleError);
+      return requestUsersStream;
+    // return requestUsersStream.mergeMap(ev => this.getUsersInfo(ev));
+  }
 
-    return requestUsersStream.mergeMap(ev => this.getUsersInfo(ev));
+  getCurrentUser() {
+    const user = this.router.routerState.snapshot.root.params;
+    debugger;
   }
 
   getUser(userId) {

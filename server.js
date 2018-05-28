@@ -13,6 +13,25 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
+app.get(`${baseUrl}/users`, async (req, res) => {
+  
+  res.send({data: [{ name: 'test_user', id: "test_user"}]});
+  
+});
+
+app.get(`${baseUrl}/books/:owner/books/:bookId/entry`, async (req, res) => {
+  const { status, payload } = await db.getBookEntry({owner: req.params.owner, bookId: req.params.bookId});
+  if (status === DBStatus.OK) {
+    // let convertedData = {};
+    // payload.forEach(element => {
+    //   convertedData[element.id] = element;
+    // });
+    res.send({data: payload});
+  } else {
+    res.send({error: payload});
+  }
+});
+
 app.get(`${baseUrl}/books/:owner/books/:bookId/:paragraphId`, async (req, res) => {
   const { status, payload } = await db.getBookParagraphById({owner: req.params.owner, bookId: req.params.bookId, paragraphId: req.params.paragraphId});
   if (status === DBStatus.OK) {

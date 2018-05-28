@@ -41,15 +41,15 @@ class DB {
         await client.close();
     }
 
-    async prepareUserDatabase (userData) {
-        const client  = await MongoClient.connect(`${baseUrl}/${userData.username}`);
-        const bookCollection = await client.createCollection("books");
-        console.log(`Database for ${userData.username} created!`);
-        await client.close();
-    }
+    // async prepareUserDatabase (userData) {
+    //     const client  = await MongoClient.connect(`${baseUrl}/${userData.username}`);
+    //     const bookCollection = await client.createCollection("books");
+    //     console.log(`Database for ${userData.username} created!`);
+    //     await client.close();
+    // }
 
     async createUser (userData) {
-        Promise.all([this.insertUserToUserData(userData), this.prepareUserDatabase(userData)]).then(() => {
+        this.insertUserToUserData(userData).then(() => {
             return new DBResponse(DBStatus.OK);
         }).catch(err => {
             return new DBResponse(DBStatus.ERROR, err);
@@ -58,15 +58,23 @@ class DB {
 
     async createBook(bookData) {
         try {
-            const client  = await MongoClient.connect(`${baseUrl}/${bookData.owner}`);
-            const bookCollection = await client.collection("books");
+            const bookDataClient  = await MongoClient.connect(usersUrl);
+            let bookCollection = await bookDataClient.collection("bookData");    
+            if (!bookCollection) {
+                bookCollection = await bookDataClient.createCollection("bookData"); 
+            }
             const book = await bookCollection.insertOne(bookData);
-            console.log("Book created!");
+            console.log("Book added to the users database!");
+
+            const client  = await MongoClient.connect(`${baseUrl}/${bookData.owner}`);
+            // const bookCollection = await client.collection("books");
+            // const book = await bookCollection.insertOne(bookData);
+            // console.log("Book created!");
             const bookRefCollection = await client.createCollection(`Book_${book.insertedId}`);
             console.log(`Collection for Book_${book.insertedId} created!`);
             const bookAssetsCollection = await client.createCollection(`Book_${book.insertedId}_Assets`);
             console.log(`Collection for Book_${book.insertedId}_Assets created!`);
-
+            await bookDataClient.close();
             await client.close();
             return new DBResponse(DBStatus.OK, book.ops[0]);
         } catch(err) {
@@ -98,6 +106,18 @@ class DB {
         }
     }
 
+    async getBookEntry (bookInfo) {
+        try {
+            const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
+            const bookCollection = await client.collection(this.getBookCollectionById(bookInfo.bookId));
+            const result = await bookCollection.find({ parents : { $size: 0 }}).toArray();
+            await client.close();
+            return new DBResponse(DBStatus.OK, result[0]);
+        } catch(err) {
+            return new DBResponse(DBStatus.ERROR, err);
+        }
+    }
+
     async getBookParagraphById (bookInfo) {
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
@@ -124,12 +144,12 @@ class DB {
                     { returnOriginal: false }
                 );
             } else {
-                const bookCollection = await client.collection("books");
-                updatedBookEntry = await bookCollection.findOneAndUpdate(
-                    { _id: new Mongo.ObjectId(bookInfo.bookId) },
-                    { $set: { entry: result.insertedId } },
-                    { returnOriginal: false }
-                );
+                // const bookCollection = await client.collection("books");
+                // updatedBookEntry = await bookCollection.findOneAndUpdate(
+                //     { _id: new Mongo.ObjectId(bookInfo.bookId) },
+                //     { $set: { entry: result.insertedId } },
+                //     { returnOriginal: false }
+                // );
             }
             await client.close();
             return new DBResponse(DBStatus.OK, { 
@@ -147,10 +167,12 @@ class DB {
 
     async listUserBooks (username) {
         try {
-            const client  = await MongoClient.connect(`${baseUrl}/${username}`);
-            const userCollection = await client.collection("books");    
-            const result = await userCollection.find().toArray();
-            await client.close();
+            // const client  = await MongoClient.connect(`${baseUrl}/${username}`);
+            // const userCollection = await client.collection("books");
+            const bookDataClient  = await MongoClient.connect(usersUrl);
+            let bookCollection = await bookDataClient.collection("bookData");    
+            const result = await bookCollection.find({owner: username}).toArray();
+            await bookDataClient.close();
             return new DBResponse(DBStatus.OK, result);
         } catch(err) {
             return new DBResponse(DBStatus.ERROR, err);

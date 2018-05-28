@@ -18,6 +18,12 @@ export class BooksService {
 
   constructor(private store: Store<any>, private http: Http) { }
 
+  getBookEntry(owner, bookId) {
+    return this.http.get(`${this.booksUrl}/${owner}/books/${bookId}/entry`)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
   getBookParagraph(owner, bookId, paragraphId) {
     return this.http.get(`${this.booksUrl}/${owner}/books/${bookId}/${paragraphId}`)
       .map(this.extractData)

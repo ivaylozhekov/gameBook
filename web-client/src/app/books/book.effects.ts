@@ -10,6 +10,14 @@ import { Action } from '../utils/action';
 @Injectable()
 export class BookEffects {
 
+    @Effect() getBookEntry$ = this.actions$
+    .ofType('GET_BOOK_ENTRY')
+    .map((action: Action) => action.payload)
+    .mergeMap((payload: any) => this.bookService.getBookEntry(payload.owner, payload.bookId)
+        .map(bookContent => this.bookActions.setBookContentAction(bookContent))
+        .catch(() => of({ type: 'GENERAL_ERROR' }))
+    );
+
     @Effect() getBookParagraph$ = this.actions$
     .ofType('GET_BOOK_PARAGRAPH')
     .map((action: Action) => action.payload)
