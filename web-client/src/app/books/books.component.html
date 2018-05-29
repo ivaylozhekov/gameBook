@@ -4,7 +4,8 @@
         <button (click)="open(book)">Open</button>
 </li>
 <div *ngIf="!newBookMode">
-        <app-book-content></app-book-content>
+    <router-outlet></router-outlet>
+        <!-- <app-book-content></app-book-content> -->
         <button (click)="createBook()">New Book</button>
 </div>
 <div *ngIf="newBookMode">

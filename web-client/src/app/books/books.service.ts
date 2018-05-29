@@ -31,7 +31,7 @@ export class BooksService {
   }
 
   getBooks(owner) {
-    return this.http.get(`${this.booksUrl}/${owner}/books`)
+    return this.http.get(owner ? `${this.booksUrl}/${owner}/books` : `${this.booksUrl}/all`)
       .map(this.extractData)
       .catch(this.handleError);
   }

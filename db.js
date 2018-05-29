@@ -107,6 +107,7 @@ class DB {
     }
 
     async getBookEntry (bookInfo) {
+        console.log('Getting book entry!')
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
             const bookCollection = await client.collection(this.getBookCollectionById(bookInfo.bookId));
@@ -119,6 +120,7 @@ class DB {
     }
 
     async getBookParagraphById (bookInfo) {
+        console.log('Getting book paragraph by id:', bookInfo)
         try {
             const client  = await MongoClient.connect(`${baseUrl}/${bookInfo.owner}`);
             const bookCollection = await client.collection(this.getBookCollectionById(bookInfo.bookId));
@@ -166,12 +168,28 @@ class DB {
     }
 
     async listUserBooks (username) {
+        console.log('Get book list', username)
         try {
             // const client  = await MongoClient.connect(`${baseUrl}/${username}`);
             // const userCollection = await client.collection("books");
             const bookDataClient  = await MongoClient.connect(usersUrl);
             let bookCollection = await bookDataClient.collection("bookData");    
             const result = await bookCollection.find({owner: username}).toArray();
+            await bookDataClient.close();
+            return new DBResponse(DBStatus.OK, result);
+        } catch(err) {
+            return new DBResponse(DBStatus.ERROR, err);
+        }
+    }
+
+    async listAllBooks () {
+        console.log('Get all books')
+        try {
+            // const client  = await MongoClient.connect(`${baseUrl}/${username}`);
+            // const userCollection = await client.collection("books");
+            const bookDataClient  = await MongoClient.connect(usersUrl);
+            let bookCollection = await bookDataClient.collection("bookData");    
+            const result = await bookCollection.find().toArray();
             await bookDataClient.close();
             return new DBResponse(DBStatus.OK, result);
         } catch(err) {

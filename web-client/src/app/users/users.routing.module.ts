@@ -11,7 +11,7 @@ const usersRoutes: Routes = [
     path: '',
     children: [
       {
-        path: ':id',
+        path: ':userId',
         loadChildren: './user-details/user-details.module#UserDetailsModule',
       }, {
         path: '',

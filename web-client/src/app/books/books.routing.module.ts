@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { BooksComponent } from './books.component';
+import { BookContentComponent } from './book-content.component';
 
 const booksRoutes: Routes = [
   {
@@ -10,6 +11,12 @@ const booksRoutes: Routes = [
       {
         path: '',
         component: BooksComponent,
+        children: [
+          {
+            path: ':bookId',
+            component: BookContentComponent,
+          }
+        ]
       }
     ]
   }

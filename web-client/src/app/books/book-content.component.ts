@@ -4,6 +4,8 @@ import { Store } from '@ngrx/store';
 import { Book, BookContent } from './book';
 import * as d3 from 'd3-hierarchy';
 import { BookActions } from './book.actions';
+import { getRouterParam } from 'app/utils/rootParamsHelper';
+import { ActivatedRoute } from '@angular/router';
 
 const PARAGRAPH_STATUS = {
   PRISTINE: 0,
@@ -21,8 +23,12 @@ export class BookContentComponent implements OnInit {
     @ViewChild('chart') private chartContainer: ElementRef;
     booksStore: Observable<any>;
 
-    constructor(private store: Store<any>, private bookActions: BookActions) {
+    constructor(private store: Store<any>, private bookActions: BookActions, private route: ActivatedRoute) {
       this.booksStore = store.select('books');
+
+      const userId = getRouterParam(route, 'userId');
+      const bookId = getRouterParam(route, 'bookId');
+      this.bookActions.getBookEntry(userId, bookId);
     }
 
     ngOnInit() {
@@ -108,29 +114,29 @@ export class BookContentComponent implements OnInit {
 //   this.x = x;
 //   this.y = y;
 //   this.r = r;
-  
+
 //   // Create group and circle elements
 //   this.g = d3.select(el).attr('class','vertex');
 //   this.circle = this.g.append('svg:circle');
-  
+
 //   // Attach drag handler
 //   var dragHandler = d3.behavior.drag().on("drag", this.dragmove.bind(this));
 //   this.circle.call(dragHandler)
-  
+
 //   // Lastly, render the circle
 //   this.render();
 // }
 
 // // Render the vertex
 // Vertex.prototype.render = function () {
-  
+
 //   // Set attributes of the circle element
 //   this.circle.attr({
 //     'cx': this.x,
 //     'cy': this.y,
 //     'r': this.r
 //   });
-  
+
 //   // Render the connections
 //   var connections = this.svg.data('connections');
 //   for ( var i in connections ) {
@@ -158,7 +164,7 @@ export class BookContentComponent implements OnInit {
 // function Connection ( v1, v2 ) {
 //   this.v1 = v1;
 //   this.v2 = v2;
-  
+
 //   var connections = d3.select(v1.svg.find('.connections').get(0));
 //   this.g = connections.append('svg:g').attr('class','connection');
 //   this.path = this.g.append('svg:path').attr('class','connection');
@@ -168,7 +174,7 @@ export class BookContentComponent implements OnInit {
 //     .x(function(d) { return d[0]; })
 //     .y(function(d) { return d[1]; })
 //     .interpolate('bundle');
-  
+
 //   // Render the connection
 //   this.render();
 // }
@@ -206,7 +212,7 @@ export class BookContentComponent implements OnInit {
 //     var c = $(this);
 //     var height = c.height();
 //     var width = c.height();
-    
+
 //     // Create an svg element and set its viewbox to match the container.
 //     // We only need to set the width, so that the height is responsive.
 //     var svg = d3.select(document.createElementNS("http://www.w3.org/2000/svg", "svg"));
@@ -215,10 +221,10 @@ export class BookContentComponent implements OnInit {
 //       viewBox: '0 0 ' + width + ' ' + height,
 //       preserveAspectRatio: 'none'
 //     });
-    
+
 //     // The SVG element will hold an array of all the connections
 //     $(svg.node()).data('connections',[]);
-    
+
 //     // Resize the svg element when the window is resized
 //     // $(window).resize(function () {
 //     //   svg.attr({
@@ -226,11 +232,11 @@ export class BookContentComponent implements OnInit {
 //     //     viewBox: '0 0 ' + c.height() + ' ' + c.height()
 //     //   });
 //     // });
-    
+
 //     var connectionsGroup = svg.append('svg:g').attr('class','connections');
 //     var verticesGroup = svg.append('svg:g').attr('class','vertices');
 //     var hash = {}; // hash to store the vertex objects
-    
+
 //     // iterate through the vertices to create the vertex objects
 //     for ( var i in vertices ) {
 //       var x = Math.random() * width;
@@ -239,7 +245,7 @@ export class BookContentComponent implements OnInit {
 //       var vertex = $(verticesGroup.append('svg:g').node()).createVertex(x,y,r);
 // 			hash[i] = vertex;
 //     }
-    
+
 //     // iterate through again and connect the vertices
 //     for ( var i in vertices ) {
 //       for ( var j in vertices[i] ) {
@@ -279,4 +285,3 @@ export class BookContentComponent implements OnInit {
 //     24: [20, 21]
 //   });
 // });
- 

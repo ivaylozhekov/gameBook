@@ -58,6 +58,19 @@ app.get(`${baseUrl}/books/:owner/books`, async (req, res) => {
   }
 });
 
+app.get(`${baseUrl}/books/all`, async (req, res) => {
+  const { status, payload } = await db.listAllBooks();
+  if (status === DBStatus.OK) {
+    let convertedData = {};
+    payload.forEach(element => {
+      convertedData[element._id] = element;
+    });
+    res.send({data: convertedData});
+  } else {
+    res.send({error: payload});
+  }
+});
+
 app.post(`${baseUrl}/books/:owner/books/:bookId`, async (req, res) => {
   const { status, payload } = await db.addBookParagraph({...req.params, parentId: req.body.parentId, linkText: req.body.linkText, paragraph: req.body.payload});
   if (status === DBStatus.OK) {
@@ -110,6 +123,6 @@ app.get(`${baseUrl}/lbc`, function (req, res) {
 //   });
 });
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+app.listen(3001, function () {
+  console.log('Example app listening on port 3001!');
 });

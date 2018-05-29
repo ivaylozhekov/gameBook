@@ -4,6 +4,8 @@ import { Store } from '@ngrx/store';
 import { Book, BookContent } from './book';
 import * as d3 from 'd3-hierarchy';
 import { BookActions } from './book.actions';
+import { getRouterParam } from 'app/utils/rootParamsHelper';
+import { ActivatedRoute } from '@angular/router';
 
 const PARAGRAPH_STATUS = {
   PRISTINE: 0,
@@ -23,7 +25,7 @@ export class BookParagraphComponent implements OnInit {
     @ViewChild('chart') private chartContainer: ElementRef;
     booksStore: Observable<any>;
 
-    constructor(private store: Store<any>, private bookActions: BookActions) {
+    constructor(private store: Store<any>, private bookActions: BookActions, private route: ActivatedRoute) {
       this.booksStore = store.select('books');
     }
 
@@ -40,7 +42,9 @@ export class BookParagraphComponent implements OnInit {
     // }
 
     proceed(id) {
-      this.bookActions.getBookParagraph(this.book.owner, this.book._id, id);
+      const userId = getRouterParam(this.route, 'userId');
+      const bookId = getRouterParam(this.route, 'bookId');
+      this.bookActions.getBookParagraph(userId, bookId, id);
     }
 
     reset() {

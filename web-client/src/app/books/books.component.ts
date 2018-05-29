@@ -6,7 +6,8 @@ import { d3 } from 'd3-hierarchy';
 
 import { BookActions } from './book.actions';
 import { UserService } from 'app/users/user.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { getRouterParam } from 'app/utils/rootParamsHelper';
 
 @Component({
   selector: 'app-books',
@@ -19,10 +20,15 @@ export class BooksComponent implements OnInit {
   public newBookMode = false;
   public newBook = new BookListItem();
   private sub;
-  constructor(private store: Store<any>, private bookActions: BookActions, private route: ActivatedRoute) {
+  constructor(
+    private store: Store<any>,
+    private bookActions: BookActions,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     this.booksStore = store.select('books');
 
-    const userId = route.pathFromRoot.find(path => (path.routeConfig || {}).path === ':id').snapshot.params.id;
+    const userId = getRouterParam(route, 'userId');
     this.bookActions.getBookList(userId);
     // this.sub = route.pathFromRoot.find(path => (path.routeConfig || {}).path === ':id').params.subscribe(params => {
     //   this.bookActions.getBookList(params.id);
@@ -30,10 +36,11 @@ export class BooksComponent implements OnInit {
   }
 
   open(book: Book) {
+    this.router.navigate([`users/${book.owner}/books/${book._id}`]);
+
     this.bookActions.setSelectedBook(book);
-    // if (book.entry) {
-      this.bookActions.getBookEntry(book.owner, book._id);
-    // }
+      // this.bookActions.getBookEntry(book.owner, book._id);
+
   }
 
   createBook() {
